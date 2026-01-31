@@ -22,6 +22,7 @@ namespace stats
 
 		game::dvar_t* cg_loot_count = nullptr;
 		game::dvar_t* director_cut_dvar = nullptr;
+		game::dvar_t* cg_unlimited_cards = nullptr;
 
 		bool is_item_unlocked_stub(__int64 a1, int a2, const char* unlock_table, unsigned __int8* value)
 		{
@@ -46,6 +47,11 @@ namespace stats
 		int item_quantity_stub(__int64 a1, int a2, int id)
 		{
 			auto result = item_quantity_hook.invoke<int>(a1, a2, id);
+
+			if (id >= 170013 && id <= 170061 && cg_unlimited_cards && cg_unlimited_cards->current.enabled)
+			{
+				return 999;
+			}
 
 			// 30000 crashes
 			if (id != 30000 && dvars::cg_unlockall_loot && dvars::cg_unlockall_loot->current.enabled)
@@ -125,7 +131,6 @@ namespace stats
 			command::execute("setRankedPlayerData progression playerLevel prestige 30", true);
 
 			command::execute("setCoopPlayerData progression playerLevel xp 95297348", true);
-			command::execute("setCoopPlayerData progression playerLevel prestige 20", true);
 
 			// weapon experience
 			command::execute("setCommonPlayerData sharedProgression weaponLevel iw7_nrg mpXP 54299", true);
@@ -360,6 +365,7 @@ namespace stats
 			dvars::cg_unlockall_loot = game::Dvar_RegisterBool("cg_unlockall_loot", default_value, default_flag, "Whether loot should be locked based on the player's stats or always unlocked.");
 
 			cg_loot_count = game::Dvar_RegisterInt("cg_loot_count", 1, 1, 99999, game::DVAR_FLAG_SAVED, "Amount of loot to give for items");
+			cg_unlimited_cards = game::Dvar_RegisterBool("cg_unlimited_cards", default_value, default_flag, "Whether Fortune Cards should be unlimited.");
 
 			// unlockables
 			is_item_unlocked_hook.create(0x14034E020, is_item_unlocked_stub);
