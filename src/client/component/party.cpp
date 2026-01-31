@@ -81,8 +81,8 @@ namespace party
 		std::vector<fastdl_file> mod_files =
 		{
 			{".ff", "mod_hash", false},
-			{".sabl", "sabl_hash", false},
-			{".sabs", "sabs_hash", false},
+			{".sabl", "sabl_hash", true},
+			{".sabs", "sabs_hash", true},
 		};
 
 		std::unordered_map<std::string, std::string> hash_cache;
